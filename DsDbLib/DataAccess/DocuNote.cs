@@ -160,8 +160,6 @@ FROM ListTags WHERE ModuleId = @Id";
         }
         return output;
     }
-
-
     public List<Message> GetMessages(DsModule module)
     {
         var output = new List<Message>();

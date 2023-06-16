@@ -64,7 +64,53 @@ public class DocuBase : DocuCommon
     }
     public List<Tag> GetTags(DsModule module)
     {
-        return new List<Tag>();
+        var output = new List<Tag>();
+        var sql =
+@"SELECT 
+DSmodule
+,DStag
+,DScomponent
+,DSfunctionUK
+,DSfunctionDK
+,DSfunctionNA
+,DSmanufactor
+,DStypeNo
+,DShomePos
+,DSioType
+,DSioTermNo
+,DSioAdress
+,DScontrolModul
+FROM Tags WHERE DSID = @Id";
+        using (var con = GetConnection())
+        {
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Id", module.Id);
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Tag tag = new Tag();
+                tag.Parent = module;
+                tag.Module = reader.GetString(0);
+                tag.Name = reader.GetString(1);
+                tag.Component = reader.GetString(2);
+                tag.FunctionUK = reader.GetString(3);
+                tag.Manufactor = reader.GetString(4);
+                tag.TypeNo = reader.GetString(5);
+                tag.HomePos = reader.GetString(6);
+                tag.IoType = reader.GetString(7);
+                tag.IoTermNo = reader.GetString(8);
+                tag.IoAddress = reader.GetString(9);
+                if (!reader.IsDBNull(10))
+                    tag.ControlModule = reader.GetString(10);
+
+                if (!String.IsNullOrEmpty(tag.FullName))
+                    output.Add(tag);
+            }
+            reader.Close();
+            con.Close();
+        }
+        return output;
     }
     public List<Message> GetMessages(DsModule module)
     {
