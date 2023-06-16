@@ -1,32 +1,22 @@
 ﻿using DsDbLib.DataAccess;
 using DsDbLib.Models;
+using DsDbLib.Helpers;
 using System.Reflection.Emit;
 
 namespace ConsoleTest4;
 class Program
 {
+    const string basePath = @"D:\arkiv";
     static void Main(string[] args)
     {
-        var msv = GetDirs(@"F:\Arkiv\M-001361");
-        for (int i = 0; i < msv.GetLength(0); i++)
-        {
-            Console.WriteLine($"{msv[i,0]}\t{msv[i, 1]}");
-        }
-    }
-    private static string[,]? GetDirs(string path)
-    {
-        var dirs = Directory.GetDirectories(path);
-        if (dirs == null)
-            return null;
-
-        var dirArray = new string[dirs.Length, 2];
-        for (int i = 0; i < dirs.Length; i++)
-        {
-            dirArray[i,0] = dirs[i];
-            var dirSplitted = dirs[i].Split('\\');
-            dirArray[i,1] = dirSplitted[dirSplitted.Length - 1];
-        }
-        return dirArray;
+        var machinePath = DirectoryHelper.GetMachineDir(basePath, "M-001361");
+        Console.WriteLine(machinePath);
+        var dsDir = DirectoryHelper.GetDsDir(machinePath);
+        Console.WriteLine(dsDir);
+        var un01Dir = DirectoryHelper.GetModuleDir(dsDir, "UN01");
+        Console.WriteLine(un01Dir);
+        var un01em02dir = DirectoryHelper.GetModuleDir(un01Dir, "EM02");
+        Console.WriteLine(un01em02dir);
     }
 
     static void TestDb()
