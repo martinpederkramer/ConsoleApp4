@@ -10,7 +10,12 @@ public static class DirectoryHelper
 {
     public static string? GetMachineDir(string path, string machine)
     {
-        
+        if (string.IsNullOrEmpty(path)) 
+            return null;
+
+        if (! Directory.Exists(path)) 
+            return null;
+
         var dirs = GetDirs(path);
         for (var i = 0; i < dirs.GetLength(0); i++)
         {
