@@ -9,23 +9,38 @@ class Program
     const string basePath = @"D:\arkiv";
     static void Main(string[] args)
     {
-        var machinePath = DirectoryHelper.GetMachineDir(basePath, "M-001361");
-        Console.WriteLine(machinePath);
-        var dsDir = DirectoryHelper.GetDsDir(machinePath);
-        Console.WriteLine(dsDir);
-        var un01Dir = DirectoryHelper.GetModuleDir(dsDir, "UN01");
-        Console.WriteLine(un01Dir);
-        var un01em02dir = DirectoryHelper.GetModuleDir(un01Dir, "EM02");
-        Console.WriteLine(un01em02dir);
+        try
+        {
+            TestDir();
+            TestDb();
+        }
+        catch
+        {
+            Console.WriteLine("GO");
+        }
+        finally
+        {
+            Console.WriteLine("FINAL");
+        }
     }
-
+    static void TestDir()
+    {
+        var machinePath = DirectoryHelper.GetMachineDirectory(basePath, "M-001361");
+        Console.WriteLine(machinePath);
+        var dsPath = DirectoryHelper.GetDsDirectory(machinePath);
+        Console.WriteLine(dsPath);
+        var un01Path = DirectoryHelper.GetModuleDirectory(dsPath, "UN01");
+        Console.WriteLine(un01Path);
+        var un01em02Path = DirectoryHelper.GetModuleDirectory(un01Path, "EM02");
+        Console.WriteLine(un01em02Path);
+    }
     static void TestDb()
     {
         var db = new DocuBase();
         var names = db.GetMachineNames();
         //var moduleTree = db.GetModuleTree("M-001280");
-        var moduleTree = db.GetModuleTree("M-001361");
-        foreach (var module in moduleTree.GetModules().Where(x => x.Type == ModuleType.Em))
+        var moduleTree = db.GetDsModuleTree("M-001361");
+        foreach (var module in moduleTree.GetDsModuleList().Where(x => x.Type == ModuleType.Em))
         {
             foreach (var msg in db.GetTags(module))
             {

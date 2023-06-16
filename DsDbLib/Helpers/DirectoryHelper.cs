@@ -8,15 +8,14 @@ namespace DsDbLib.Helpers;
 
 public static class DirectoryHelper
 {
-    public static string? GetMachineDir(string path, string machine)
+    public static string? GetMachineDirectory(string? path, string? machine)
     {
-        if (string.IsNullOrEmpty(path)) 
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(machine)) 
             return null;
-
         if (! Directory.Exists(path)) 
             return null;
 
-        var dirs = GetDirs(path);
+        var dirs = GetDirectories(path);
         for (var i = 0; i < dirs.GetLength(0); i++)
         {
             if (dirs[i,1].StartsWith(machine))
@@ -24,11 +23,12 @@ public static class DirectoryHelper
         }
         return null;
     }
-    public static string? GetDsDir(string? path)
+    public static string? GetDsDirectory(string? path)
     {
         if ( string.IsNullOrEmpty(path) ) 
             return null;
-        var dirs = DirectoryHelper.GetDirs(path);
+
+        var dirs = DirectoryHelper.GetDirectories(path);
         for (int i = 0; i < dirs.GetLength(0); i++)
         {
             if (dirs[i, 1].ToUpper() == "DS")
@@ -38,11 +38,12 @@ public static class DirectoryHelper
         }
         return null;
     }
-    public static string? GetModuleDir(string? path, string? moduleName)
+    public static string? GetModuleDirectory(string? path, string? moduleName)
     {
         if( string.IsNullOrEmpty(path) || string.IsNullOrEmpty(moduleName) )
             return null;
-        var dirs = DirectoryHelper.GetDirs(path);
+
+        var dirs = DirectoryHelper.GetDirectories(path);
         for (int i = 0; i < dirs.GetLength(0); i++)
         {
             if (dirs[i, 1].StartsWith(moduleName))
@@ -52,11 +53,11 @@ public static class DirectoryHelper
         }
         return null;
     }
-    public static string[,] GetDirs(string? path)
+    public static string[,] GetDirectories(string? path)
     {
         if (string.IsNullOrEmpty(path))
             return new string[0, 0];
-        var dirs = Directory.GetDirectories(path);
+        var dirs = Directory.GetDirectories(path).OrderBy(x => x).ToArray();
         if (dirs == null)
             return new string[0,0];
 
@@ -69,7 +70,7 @@ public static class DirectoryHelper
         }
         return dirArray;
     }
-    public static string? GetEndDir(this string? path)
+    public static string? GetDirectoryName(this string? path)
     {
         if (string.IsNullOrEmpty(path))
             return null;

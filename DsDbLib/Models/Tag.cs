@@ -11,12 +11,12 @@ public class Tag : DsBase
     public string? Module { get; set; }
     public string? Name { get; set; }
     public string? Component { get; set; }
-    public string? FunctionUK { get; set; }
+    public string? Function { get; set; }
     public string? Manufactor { get; set; }
     public string? TypeNo { get; set; }
-    public string? HomePos { get; set; }
+    public string? HomePosition { get; set; }
     public string? IoType { get; set; }
-    public string? IoTermNo { get; set; }
+    public string? IoTerminalNo { get; set; }
     public string? IoAddress { get; set; }
     public string? ControlModule { get; set; }
     public string? CpuTag { get; set; }

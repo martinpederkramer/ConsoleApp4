@@ -18,20 +18,20 @@ public class DsModule
     {
         return Name;
     }
-    public List<DsModule> GetModules()
+    public List<DsModule> GetDsModuleList()
     {
         List<DsModule> output = new();
         output.Add(this);
-        GetModuleRecursive(this, output);
+        TraverseDsModules(this, output);
 
         return output;
     }
-    private void GetModuleRecursive(DsModule module, List<DsModule> output)
+    private void TraverseDsModules(DsModule module, List<DsModule> output)
     {
         foreach (var item in module.Childs)
         {
             output.Add(item);
-            GetModuleRecursive(item, output);
+            TraverseDsModules(item, output);
         }
     }
 }

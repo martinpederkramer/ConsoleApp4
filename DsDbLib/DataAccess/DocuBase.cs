@@ -20,7 +20,7 @@ public class DocuBase : DocuCommon
             return con.Query<string>(sql).OrderBy( x => x).ToList();
         }
     }
-    public DsModule GetModuleTree(string machineName)
+    public DsModule GetDsModuleTree(string machineName)
     {
         string[] dsIds;
         using (var con = GetConnection())
@@ -94,12 +94,12 @@ FROM Tags WHERE DSID = @Id";
                 tag.Module = reader.GetString(0);
                 tag.Name = reader.GetString(1);
                 tag.Component = reader.GetString(2);
-                tag.FunctionUK = reader.GetString(3);
+                tag.Function = reader.GetString(3);
                 tag.Manufactor = reader.GetString(4);
                 tag.TypeNo = reader.GetString(5);
-                tag.HomePos = reader.GetString(6);
+                tag.HomePosition = reader.GetString(6);
                 tag.IoType = reader.GetString(7);
-                tag.IoTermNo = reader.GetString(8);
+                tag.IoTerminalNo = reader.GetString(8);
                 tag.IoAddress = reader.GetString(9);
                 if (!reader.IsDBNull(10))
                     tag.ControlModule = reader.GetString(10);
