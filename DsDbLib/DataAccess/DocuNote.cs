@@ -75,7 +75,6 @@ public class DocuNote : DocuCommon
             }
 
             reader.Close();
-            con.Close();
         }
         return root;
     }
@@ -156,7 +155,6 @@ FROM ListTags WHERE ModuleId = @Id";
                     output.Add(tag);
             }
             reader.Close();
-            con.Close();
         }
         return output;
     }
@@ -237,7 +235,6 @@ FROM ListMessage WHERE ModuleId = @Id";
                 output.Add(msg);
             }
             reader.Close();
-            con.Close();
         }
         return output;
     }
@@ -329,7 +326,140 @@ FROM ListPars WHERE ModuleId = @Id";
                 output.Add(par);
             }
             reader.Close();
-            con.Close();
+        }
+        return output;
+    }
+    public List<Process> GetProcess(DsModule module)
+    {
+        var output = new List<Process>();
+        var sql =
+@"SELECT DSName
+,DSFunctionDK
+,DSFunctionUK
+,DSFunctionNA
+,DSType
+,DSUnit
+,DSTested
+,DSSpare1
+,DSSpare2
+,DSSpare3
+,DSSpare4
+,DSSpare5
+,DSSpare6
+,DSSpare7
+,DSSpare8
+,DSSpare9
+,DSSpare10
+FROM ListProcess WHERE ModuleId = @Id";
+        using (var con = GetConnection())
+        {
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Id", Guid.Parse(module.Id!));
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Process process = new Process();
+                process.Parent = module;
+                process.Name = reader.GetString(0);
+                process.FunctionDK = reader.GetString(1);
+                process.FunctionUK = reader.GetString(2);
+                process.FunctionNA = reader.GetString(3);
+                process.Type = reader.GetString(4);
+                process.Unit = reader.GetString(5);
+                if (!reader.IsDBNull(6))
+                    process.Tested = reader.GetString(6);
+                if (!reader.IsDBNull(7))
+                    process.Spare1 = reader.GetString(7);
+                if (!reader.IsDBNull(8))
+                    process.Spare2 = reader.GetString(8);
+                if (!reader.IsDBNull(9))
+                    process.Spare3 = reader.GetString(9);
+                if (!reader.IsDBNull(10))
+                    process.Spare4 = reader.GetString(10);
+                if (!reader.IsDBNull(11))
+                    process.Spare5 = reader.GetString(11);
+                if (!reader.IsDBNull(12))
+                    process.Spare6 = reader.GetString(12);
+                if (!reader.IsDBNull(13))
+                    process.Spare7 = reader.GetString(13);
+                if (!reader.IsDBNull(14))
+                    process.Spare8 = reader.GetString(14);
+                if (!reader.IsDBNull(15))
+                    process.Spare9 = reader.GetString(15);
+                if (!reader.IsDBNull(16))
+                    process.Spare10 = reader.GetString(16);
+                if (!String.IsNullOrEmpty(process.Name))
+                    output.Add(process);
+            }
+            reader.Close();
+        }
+        return output;
+    }
+    public List<Data> GetData(DsModule module)
+    {
+        var output = new List<Data>();
+        var sql =
+@"SELECT DSName
+,DSDescription
+,DSType
+,DSGroup
+,DSTested
+,DSInitValue
+,DSSpare1
+,DSSpare2
+,DSSpare3
+,DSSpare4
+,DSSpare5
+,DSSpare6
+,DSSpare7
+,DSSpare8
+,DSSpare9
+,DSSpare10
+FROM ListData WHERE ModuleId = @Id";
+        using (var con = GetConnection())
+        {
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Id", Guid.Parse(module.Id!));
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Data data = new Data();
+                data.Parent = module;
+                data.Name = reader.GetString(0);
+                data.Description = reader.GetString(1);
+                data.Type = reader.GetString(2);
+                data.Group = reader.GetString(3);
+                if (!reader.IsDBNull(4))
+                    data.Tested = reader.GetString(4);
+                if (!reader.IsDBNull(5))
+                    data.InitialValue = reader.GetString(5);
+                if (!reader.IsDBNull(6))
+                    data.Spare1 = reader.GetString(6);
+                if (!reader.IsDBNull(7))
+                    data.Spare2 = reader.GetString(7);
+                if (!reader.IsDBNull(8))
+                    data.Spare3 = reader.GetString(8);
+                if (!reader.IsDBNull(9))
+                    data.Spare4 = reader.GetString(9);
+                if (!reader.IsDBNull(10))
+                    data.Spare5 = reader.GetString(10);
+                if (!reader.IsDBNull(11))
+                    data.Spare6 = reader.GetString(11);
+                if (!reader.IsDBNull(12))
+                    data.Spare7 = reader.GetString(12);
+                if (!reader.IsDBNull(13))
+                    data.Spare8 = reader.GetString(13);
+                if (!reader.IsDBNull(14))
+                    data.Spare9 = reader.GetString(14);
+                if (!reader.IsDBNull(15))
+                    data.Spare10 = reader.GetString(15);
+
+                if (!String.IsNullOrEmpty(data.Name))
+                    output.Add(data);
+            }
+            reader.Close();
         }
         return output;
     }

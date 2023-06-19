@@ -114,7 +114,6 @@ FROM Tags WHERE DSID = @Id";
                     output.Add(tag);
             }
             reader.Close();
-            con.Close();
         }
         return output;
     }
@@ -158,7 +157,6 @@ FROM Message WHERE DSID = @Id";
                 output.Add(msg);
             }
             reader.Close();
-            con.Close();
         }
         return output;
     }
@@ -209,16 +207,79 @@ FROM Pars WHERE DSID = @Id";
                     output.Add(par);
             }
             reader.Close();
-            con.Close();
         }
         return output;
     }
-    public List<Data> GetDatas(DsModule module)
+    public List<Process> GetProcess(DsModule module)
     {
-        return new List<Data>();
+        var output = new List<Process>();
+        var sql =
+@"SELECT DSname
+,DSfunctionDK
+,DSfunctionUK
+,DSfunctionNA
+,DStype
+,DSunit
+,DStested
+FROM Process WHERE DSID = @Id";
+        using (var con = GetConnection())
+        {
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Id", module.Id);
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Process process = new Process();
+                process.Parent = module;
+                process.Name = reader.GetString(0);
+                process.FunctionDK = reader.GetString(1);
+                process.FunctionUK = reader.GetString(2);
+                process.FunctionNA = reader.GetString(3);
+                process.Type = reader.GetString(4);
+                process.Unit = reader.GetString(5);
+                if (!reader.IsDBNull(6))
+                    process.Tested = reader.GetString(6);
+
+                if (!String.IsNullOrEmpty(process.Name))
+                    output.Add(process);
+            }
+            reader.Close();
+        }
+        return output;
     }
-    public List<Process> GetProcesses(DsModule module)
+    public List<Data> GetData(DsModule module)
     {
-        return new List<Process>();
+        var output = new List<Data>();
+        var sql =
+@"SELECT DSname
+,DSdescription
+,DStype
+,DSgroup
+,DStested
+FROM Data WHERE DSID = @Id";
+        using (var con = GetConnection())
+        {
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Id", module.Id);
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Data data = new Data();
+                data.Parent = module;
+                data.Name = reader.GetString(0);
+                data.Description = reader.GetString(1);
+                data.Type = reader.GetString(2);
+                data.Group = reader.GetString(3);
+                if (!reader.IsDBNull(4))
+                    data.Tested = reader.GetString(4);
+
+                if (!String.IsNullOrEmpty(data.Name))
+                    output.Add(data);
+            }
+            reader.Close();
+        }
+        return output;
     }
 }

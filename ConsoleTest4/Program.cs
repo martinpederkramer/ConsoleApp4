@@ -22,7 +22,6 @@ class Program
         var un01em02Path = DirectoryHelper.GetModuleDirectory(un01Path, "EM02");
         Console.WriteLine(un01em02Path);
     }
-    //M001361UN01EM05
     static void TestDb()
     {
         var db = new DocuNote();
@@ -31,7 +30,7 @@ class Program
         //var moduleTree = db.GetDsModuleTree("M-001361");
         foreach (var module in moduleTree.GetDsModuleList().Where(x => x.Type == ModuleType.Em))
         {
-            foreach (var msg in db.GetParameters(module))
+            foreach (var msg in db.GetData(module))
             {
                 Console.WriteLine(msg);
             }
