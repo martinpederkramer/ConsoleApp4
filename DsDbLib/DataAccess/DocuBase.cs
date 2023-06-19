@@ -10,7 +10,7 @@ using DsDbLib.Helpers;
 
 namespace DsDbLib.DataAccess;
 
-public class DocuBase : DocuCommon
+public class DocuBase : DocuCommon, IDocuObject
 {
     public List<string> GetMachineNames()
     {
@@ -18,7 +18,7 @@ public class DocuBase : DocuCommon
         {
             var sql = "SELECT DISTINCT DSmachineNo FROM Tags";
 
-            return con.Query<string>(sql).OrderBy( x => x).ToList();
+            return con.Query<string>(sql).OrderBy(x => x).ToList();
         }
     }
     public DsModule GetDsModuleTree(string machineName)

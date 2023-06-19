@@ -14,6 +14,16 @@ public class DsModule
     public ModuleType Type { get; set; }
     public DsModule? Parent { get; set; }
     public List<DsModule> Childs { get; set; } = new List<DsModule>();
+    public string? FullName
+    {
+        get
+        {
+            if (Parent != null)
+                return Parent.FullName + "." + Name;
+            else 
+                return Name;
+        }
+    }
     public override string? ToString()
     {
         return Name;

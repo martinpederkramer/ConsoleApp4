@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DsDbLib.DataAccess;
 
-public class DocuNote : DocuCommon
+public class DocuNote : DocuCommon, IDocuObject
 {
     public List<string> GetMachineNames()
     {
@@ -42,6 +42,7 @@ public class DocuNote : DocuCommon
                 root.Description = reader.GetString(1);
             }
             reader.Close();
+            
             sql = @"SELECT Id, UnitIdentifier, Name FROM Unit WHERE CellId = @Id ORDER BY UnitIdentifier";
             cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@Id", Guid.Parse(root.Id!));
@@ -49,6 +50,7 @@ public class DocuNote : DocuCommon
             while (reader.Read())
             {
                 var un = new DsModule();
+                un.Parent = root;
                 un.Type = ModuleType.Unit;
                 un.Id = reader.GetGuid(0).ToString();
                 un.Name = reader.GetString(1);
@@ -65,6 +67,7 @@ public class DocuNote : DocuCommon
                 while (reader.Read())
                 {
                     var em = new DsModule();
+                    em.Parent = child;
                     em.Type = ModuleType.Em;
                     em.Id = reader.GetGuid(0).ToString();
                     em.Name = reader.GetString(1);
