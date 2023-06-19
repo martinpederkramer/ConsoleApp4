@@ -9,19 +9,7 @@ class Program
     const string basePath = @"D:\arkiv";
     static void Main(string[] args)
     {
-        try
-        {
-            TestDir();
-            TestDb();
-        }
-        catch
-        {
-            Console.WriteLine("GO");
-        }
-        finally
-        {
-            Console.WriteLine("FINAL");
-        }
+        TestDb();
     }
     static void TestDir()
     {
@@ -34,15 +22,16 @@ class Program
         var un01em02Path = DirectoryHelper.GetModuleDirectory(un01Path, "EM02");
         Console.WriteLine(un01em02Path);
     }
+    //M001361UN01EM05
     static void TestDb()
     {
-        var db = new DocuBase();
+        var db = new DocuNote();
         var names = db.GetMachineNames();
-        //var moduleTree = db.GetModuleTree("M-001280");
-        var moduleTree = db.GetDsModuleTree("M-001361");
+        var moduleTree = db.GetDsModuleTree("M-001280");
+        //var moduleTree = db.GetDsModuleTree("M-001361");
         foreach (var module in moduleTree.GetDsModuleList().Where(x => x.Type == ModuleType.Em))
         {
-            foreach (var msg in db.GetTags(module))
+            foreach (var msg in db.GetParameters(module))
             {
                 Console.WriteLine(msg);
             }

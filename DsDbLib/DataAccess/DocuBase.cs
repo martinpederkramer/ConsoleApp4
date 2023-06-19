@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using System.Data.SqlClient;
+using DsDbLib.Helpers;
 
 namespace DsDbLib.DataAccess;
 
@@ -29,20 +30,23 @@ public class DocuBase : DocuCommon
             var par = new { MachineNo = machineName };
             dsIds = con.Query<string>(sql, par).Where(x => x.Length == 15).ToArray();
         }
-
+        var machinePath = DirectoryHelper.GetMachineDirectory(@"F:\Arkiv", machineName);
         var root = new DsModule()
         {
             Id = $"M{machineName.Substring(2, 6)}",
             Name = machineName,
+            Description = machinePath.GetDirectoryName(),
             Type = ModuleType.Cell
         };
-
+        var dsPath = DirectoryHelper.GetDsDirectory(machinePath);
         foreach (var unId in dsIds.Select(x => x.Substring(7, 4)).Distinct())
         {
+            var unPath = DirectoryHelper.GetModuleDirectory(dsPath, unId);
             var un = new DsModule()
             {
                 Id = root.Id + unId,
                 Name = unId,
+                Description = unPath.GetDirectoryName(),
                 Parent = root,
                 Type = ModuleType.Unit
             };
@@ -53,10 +57,12 @@ public class DocuBase : DocuCommon
                 var em = new DsModule()
                 {
                     Id = emId,
-                    Name = emId.Substring(11, 4),
+                    Name = emId.Substring(emId.Length - 4),
                     Parent = un,
                     Type = ModuleType.Em
                 };
+                var emPath = DirectoryHelper.GetModuleDirectory(unPath, em.Name);
+                em.Description = emPath.GetDirectoryName();
                 un.Childs.Add(em);
             }
         }
@@ -128,7 +134,6 @@ FROM Tags WHERE DSID = @Id";
 ,DStrigger
 ,DStested
 FROM Message WHERE DSID = @Id";
-        int i;
         using (var con = GetConnection())
         {
             SqlCommand cmd = new SqlCommand(sql, con);
@@ -159,7 +164,54 @@ FROM Message WHERE DSID = @Id";
     }
     public List<Parameter> GetParameters(DsModule module)
     {
-        return new List<Parameter>();
+        var output = new List<Parameter>();
+        var sql =
+@"SELECT DSname
+,DSfunctionDK
+,DSfunctionUK
+,DSfunctionNA
+,DStype
+,DSgroup
+,DSunit
+,DSmin
+,DSmax
+,DSsecurityLevel
+,DSDecimals
+,DStested
+FROM Pars WHERE DSID = @Id";
+        using (var con = GetConnection())
+        {
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Id", module.Id);
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Parameter par = new Parameter();
+                par.Parent = module;
+                par.Name = reader.GetString(0);
+                par.FunctionDK = reader.GetString(1);
+                par.FunctionUK = reader.GetString(2);
+                par.FunctionNA = reader.GetString(3);
+                par.Type = reader.GetString(4);
+                par.Group = reader.GetString(5);
+                par.Unit = reader.GetString(6);
+                par.Min = reader.GetString(7);
+                par.Max = reader.GetString(8);
+                if (!reader.IsDBNull(9))
+                    par.SecurityLevel = reader.GetString(9);
+                if (!reader.IsDBNull(10))
+                    par.Decimals = reader.GetString(10);
+                if (!reader.IsDBNull(11))
+                    par.Tested = reader.GetString(11);
+
+                if (!String.IsNullOrEmpty(par.Name))
+                    output.Add(par);
+            }
+            reader.Close();
+            con.Close();
+        }
+        return output;
     }
     public List<Data> GetDatas(DsModule module)
     {

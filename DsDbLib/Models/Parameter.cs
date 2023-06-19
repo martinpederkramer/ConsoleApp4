@@ -8,4 +8,24 @@ namespace DsDbLib.Models;
 
 public class Parameter : DsBase
 {
+    public string? Name { get; set; }
+    public string? FunctionDK { get; set; }
+    public string? FunctionUK { get; set; }
+    public string? FunctionNA { get; set; }
+    public string? Type { get; set; }
+    public string? Group { get; set; }
+    public string? Unit { get; set; }
+    public string? Min { get; set; }
+    public string? Max { get; set; }
+    public string? SecurityLevel { get; set; }
+    public string?Decimals { get; set; }
+    public string? Tested { get; set; }
+    public string? InitialValue { get; set; }
+    public string? KeyPadCaption { get; set; }
+    public string? SwState { get; set; }
+    public string? AuditTrail { get; set; }
+    public override string? ToString()
+    {
+        return Name;
+    }
 }

@@ -200,7 +200,7 @@ FROM ListMessage WHERE ModuleId = @Id";
                 Message msg = new Message();
                 msg.Parent = module;
                 msg.Name = reader.GetString(0);
-                msg.Group = reader.GetGuid(1).ToString();
+                msg.Group = reader.GetString(1);
                 msg.AlarmtextDK = reader.GetString(2);
                 msg.AlarmtextUK = reader.GetString(3);
                 msg.AlarmtextNA = reader.GetString(4);
@@ -235,6 +235,98 @@ FROM ListMessage WHERE ModuleId = @Id";
                 if (!reader.IsDBNull(22))
                     msg.Spare10 = reader.GetString(22);
                 output.Add(msg);
+            }
+            reader.Close();
+            con.Close();
+        }
+        return output;
+    }
+    public List<Parameter> GetParameters(DsModule module)
+    {
+        var output = new List<Parameter>();
+        var sql =
+@"SELECT DSName
+,DSFunctionDK
+,DSFunctionUK
+,DSFunctionNA
+,DSType
+,DSGroup
+,DSUnit
+,DSMin
+,DSMax
+,DSSecurityLevel
+,DSDecimals
+,DSTested
+,DSInitialValue
+,DSKeyPadCaption
+,DSSwState
+,DSAuditTrail
+,DSSpare1
+,DSSpare2
+,DSSpare3
+,DSSpare4
+,DSSpare5
+,DSSpare6
+,DSSpare7
+,DSSpare8
+,DSSpare9
+,DSSpare10
+FROM ListPars WHERE ModuleId = @Id";
+        using (var con = GetConnection())
+        {
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Id", Guid.Parse(module.Id!));
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Parameter par = new Parameter();
+                par.Parent = module;
+                par.Name = reader.GetString(0);
+                par.FunctionDK = reader.GetString(1);
+                par.FunctionUK = reader.GetString(2);
+                par.FunctionNA = reader.GetString(3);
+                par.Type = reader.GetString(4);
+                par.Group = reader.GetString(5);
+                par.Unit = reader.GetString(6);
+                par.Min = reader.GetString(7);
+                par.Max = reader.GetString(8);
+                if (!reader.IsDBNull(9))
+                    par.SecurityLevel = reader.GetString(9);
+                if (!reader.IsDBNull(10))
+                    par.Decimals = reader.GetString(10);
+                if (!reader.IsDBNull(11))
+                    par.Tested = reader.GetString(11);
+                if (!reader.IsDBNull(12))
+                    par.InitialValue = reader.GetString(12);
+                if (!reader.IsDBNull(13))
+                    par.KeyPadCaption = reader.GetString(13);
+                if (!reader.IsDBNull(14))
+                    par.SwState = reader.GetString(14);
+                if (!reader.IsDBNull(15))
+                    par.AuditTrail = reader.GetString(15);
+                if (!reader.IsDBNull(16))
+                    par.Spare1 = reader.GetString(16);
+                if (!reader.IsDBNull(17))
+                    par.Spare2 = reader.GetString(17);
+                if (!reader.IsDBNull(18))
+                    par.Spare3 = reader.GetString(18);
+                if (!reader.IsDBNull(19))
+                    par.Spare4 = reader.GetString(19);
+                if (!reader.IsDBNull(20))
+                    par.Spare5 = reader.GetString(20);
+                if (!reader.IsDBNull(21))
+                    par.Spare6 = reader.GetString(21);
+                if (!reader.IsDBNull(22))
+                    par.Spare7 = reader.GetString(22);
+                if (!reader.IsDBNull(23))
+                    par.Spare8 = reader.GetString(23);
+                if (!reader.IsDBNull(24))
+                    par.Spare9 = reader.GetString(24);
+                if (!reader.IsDBNull(25))
+                    par.Spare10 = reader.GetString(25);
+                if (!String.IsNullOrEmpty(par.Name))
+                output.Add(par);
             }
             reader.Close();
             con.Close();
