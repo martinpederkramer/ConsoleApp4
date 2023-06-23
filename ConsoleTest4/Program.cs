@@ -1,7 +1,10 @@
 ﻿using DsDbLib.DataAccess;
 using DsDbLib.Models;
 using DsDbLib.Helpers;
-using System.Reflection.Emit;
+using Pro = System.Diagnostics;
+using System.Security.Cryptography;
+using Microsoft.VisualBasic;
+using System.Text;
 
 namespace ConsoleTest4;
 class Program
@@ -9,9 +12,12 @@ class Program
     const string basePath = @"F:\Arkiv";
     static void Main(string[] args)
     {
-        TestDb();
+        //TestProcess();
+        //TestDb();
         //TestDir();
     }
+
+
     static void TestDir()
     {
         var machinePath = DirectoryHelper.GetMachineDirectory(basePath, "M-001361");
@@ -39,6 +45,13 @@ class Program
             {
                 Console.WriteLine(msg);
             }
+        }
+    }
+    static void TestProcess()
+    {
+        foreach (var item in Pro.Process.GetProcesses().Where(x => x.ProcessName.StartsWith("Con")))
+        {
+            Console.WriteLine(item.ProcessName);
         }
     }
 }
