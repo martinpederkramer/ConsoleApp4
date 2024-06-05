@@ -15,9 +15,18 @@ class Program
         //TestProcess();
         //TestDb();
         //TestDir();
+        HandiParkDiff();
     }
 
+    static void HandiParkDiff()
+    {
+        DateTime oprettelse = DateTime.Parse("2024-03-08");
 
+        TimeSpan diff = DateTime.Now - oprettelse;
+
+        Console.WriteLine(diff.Days);
+        Console.WriteLine(diff.Days / 7d);
+    }
     static void TestDir()
     {
         var machinePath = DirectoryHelper.GetMachineDirectory(basePath, "M-001361");
