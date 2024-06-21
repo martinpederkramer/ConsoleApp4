@@ -1,44 +1,45 @@
-﻿using DsDbLib.DataAccess;
-using DsDbLib.Models;
-using DsDbLib.Helpers;
-using System.Reflection.Emit;
+﻿using System.Xml.Linq;
 
 namespace ConsoleTest4;
-class Program
+
+public class Program
 {
-    const string basePath = @"F:\Arkiv";
     static void Main(string[] args)
     {
-        TestDb();
-        //TestDir();
-    }
-    static void TestDir()
-    {
-        var machinePath = DirectoryHelper.GetMachineDirectory(basePath, "M-001361");
-        Console.WriteLine(machinePath);
-        var dsPath = DirectoryHelper.GetDsDirectory(machinePath);
-        Console.WriteLine(dsPath);
-        var un01Path = DirectoryHelper.GetModuleDirectory(dsPath, "UN01");
-        Console.WriteLine(un01Path);
-        var un01em02Path = DirectoryHelper.GetModuleDirectory(un01Path, "EM03");
-        Console.WriteLine(un01em02Path);
-    }
-    static void TestDb()
-    {
-        IDocuObject db = new DocuBase();
-        var names = db.GetMachineNames();
-        DsModule moduleTree;
-        //moduleTree = db.GetDsModuleTree("M-001280");
+        string screenFile = @"D:\temp\xml\HMI_RT_1\screens\un01_em01_Par.xml";
 
-        moduleTree = db.GetDsModuleTree("M-001260");//3PSH Docubase
-        //moduleTree = db.GetDsModuleTree("M-001361");//Docubase
-
-        foreach (var module in moduleTree.GetDsModuleList().Where(x => x.Type == ModuleType.Em))
+        XDocument doc = XDocument.Load(screenFile);
+        XElement root = doc.Root!;
+        XElement screen = root.Element("Hmi.Screen.Screen")!;
+        PrintAllElements(root);
+    }
+    static void PrintRecursive(XElement root)
+    {
+        Console.WriteLine(root.Name);
+        foreach (XElement element in root.Elements())
         {
-            foreach (var msg in db.GetParameters(module))
-            {
-                Console.WriteLine(msg);
-            }
+            PrintRecursive(element);
         }
+    }
+
+    static int PrintAllElements(XElement root)
+    {
+        int count = 0;
+        Stack<XElement> stack = new Stack<XElement>();
+        stack.Push(root);
+        XElement current;
+        while (stack.Count > 0)
+        {
+            current = stack.Pop();
+            count++;
+            Console.WriteLine(current.Name);
+            foreach (var attribute in current.Attributes())
+            {
+                Console.WriteLine("\t" + attribute.Name + "=" + attribute.Value);
+            }
+            foreach (XElement element in current.Elements())
+                stack.Push(element);
+        }
+        return count;
     }
 }
