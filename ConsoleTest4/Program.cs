@@ -5,6 +5,9 @@ using Pro = System.Diagnostics;
 using System.Security.Cryptography;
 using Microsoft.VisualBasic;
 using System.Text;
+using System.IO.Compression;
+using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace ConsoleTest4;
 class Program
@@ -15,9 +18,30 @@ class Program
         //TestProcess();
         //TestDb();
         //TestDir();
-        HandiParkDiff();
-    }
+        //HandiParkDiff();
 
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        int i = 0;
+        string s;
+        using (FileStream zipToOpen = new FileStream(@"V:\STD-Baseprograms\ParameterValidator\data\M-001361\M-001361.zip", FileMode.Open))
+        {
+            using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
+            {
+                foreach (var entry in archive.Entries)
+                {
+                    using (StreamReader sr = new StreamReader(entry.Open()))
+                    {
+                        s = sr.ReadToEnd();
+                        Console.WriteLine(entry.FullName);
+                        //XDocument xDocument = XDocument.Parse(s);
+                    }
+                }
+            }
+        }
+        Console.WriteLine(sw.ElapsedMilliseconds);
+        Console.WriteLine(i);
+    }
     static void HandiParkDiff()
     {
         DateTime oprettelse = DateTime.Parse("2024-03-08");
