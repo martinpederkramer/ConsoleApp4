@@ -15,7 +15,7 @@ public class Program
 }
 public class OeeBatch
 {
-    public double Ppm { get; set; }
+    public TimeSpan CycleTime { get; set; }
     public int BatchId { get; set; }
     public string? BatchName { get; set; }
     public int State { get; set; }
