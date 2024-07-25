@@ -1,14 +1,9 @@
-﻿using System.Xml.Linq;
+﻿using DsDbLib.DataAccess;
 
 namespace ConsoleTest4;
-
 public class Program
 {
     static void Main(string[] args)
-    {
-
-    }
-    static void TestRecursive()
     {
         string screenFile = @"D:\temp\xml\HMI_RT_1\screens\un01_em01_Par.xml";
 
@@ -22,29 +17,8 @@ public class Program
         Console.WriteLine(root.Name);
         foreach (XElement element in root.Elements())
         {
-            PrintRecursive(element);
+            Console.WriteLine(machine);
         }
-    }
-
-    static int PrintAllElements(XElement root)
-    {
-        int count = 0;
-        Stack<XElement> stack = new Stack<XElement>();
-        stack.Push(root);
-        XElement current;
-        while (stack.Count > 0)
-        {
-            current = stack.Pop();
-            count++;
-            Console.WriteLine(current.Name);
-            foreach (var attribute in current.Attributes())
-            {
-                Console.WriteLine("\t" + attribute.Name + "=" + attribute.Value);
-            }
-            foreach (XElement element in current.Elements())
-                stack.Push(element);
-        }
-        return count;
     }
 }
 public class Person

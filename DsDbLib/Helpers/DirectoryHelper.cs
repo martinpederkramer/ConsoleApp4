@@ -28,7 +28,7 @@ public static class DirectoryHelper
         if ( string.IsNullOrEmpty(path) ) 
             return null;
 
-        var dirs = DirectoryHelper.GetDirectories(path);
+        var dirs = GetDirectories(path);
         for (int i = 0; i < dirs.GetLength(0); i++)
         {
             if (dirs[i, 1].ToUpper() == "DS")
@@ -43,7 +43,7 @@ public static class DirectoryHelper
         if( string.IsNullOrEmpty(path) || string.IsNullOrEmpty(moduleName) )
             return null;
 
-        var dirs = DirectoryHelper.GetDirectories(path);
+        var dirs = GetDirectories(path);
         for (int i = 0; i < dirs.GetLength(0); i++)
         {
             if (dirs[i, 1].StartsWith(moduleName))
