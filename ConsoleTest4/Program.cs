@@ -6,6 +6,10 @@ public class Program
 {
     static void Main(string[] args)
     {
+
+    }
+    static void TestRecursive()
+    {
         string screenFile = @"D:\temp\xml\HMI_RT_1\screens\un01_em01_Par.xml";
 
         XDocument doc = XDocument.Load(screenFile);
@@ -41,5 +45,13 @@ public class Program
                 stack.Push(element);
         }
         return count;
+    }
+}
+public class Person
+{
+    public string Name { get; set; }
+    public Person()
+    {
+        
     }
 }
