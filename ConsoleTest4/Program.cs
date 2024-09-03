@@ -6,6 +6,32 @@ public class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine((int)DateTime.Now.DayOfWeek);
+        var files = GetAllFileNames(@"D:\Temp");
+
+        foreach (var file in files)
+        {
+            Console.WriteLine(file);
+        }
+    }
+    static List<string> GetAllFileNames(string rootDir)
+    {
+        List<string> files = new List<string>();
+        Queue<string> queue = new Queue<string>();
+        queue.Enqueue(rootDir);
+
+        string actDir;
+        while (queue.Count > 0)
+        {
+            actDir = queue.Dequeue();
+            foreach (string file in Directory.GetFiles(actDir))
+            {
+                files.Add(file);
+            }
+            foreach (var dir in Directory.GetDirectories(actDir))
+            {
+                queue.Enqueue(dir);
+            }
+        }
+        return files;
     }
 }
